@@ -97,13 +97,12 @@ function modifyNowState(nowState) {
     return newArr;
 }
 
-function InitialState() {
-    const row = 40;
-    let state = InitArray(row, row);
+function InitialState(row, line) {
+    let state = InitArray(row, line);
 
     for (let i = 0; i < row * 2; i++) {
         let x = Math.floor(Math.random() * row / 2) + row / 5;
-        let y = Math.floor(Math.random() * row / 2) + row / 5;
+        let y = Math.floor(Math.random() * line / 2) + row / 5;
         state[x][y] = ALIVE;
     }
 
@@ -127,7 +126,7 @@ function printStateOnConsole(nowState) {
 
 
 let updateDelay = 100;
-let nowState = InitialState();
+let nowState = InitialState(50, 50);
 let interval;
 
 function game() {
@@ -140,19 +139,19 @@ function game() {
     }, updateDelay);
 }
 
-
 const gridWidth = 500 / nowState.length;
 
 function printStateOnHtml(nowState) {
-
-    let aliveColor = "#FF0000";
+    const aliveColor = "#FF0000";
     const deathColor = "#FFFFFF";
+    const lineWidth = 0.3;
+    const strokeStyle = "#666";
 
     for (let i = 0; i < nowState.length; i++) {
         for (let j = 0; j < nowState[i].length; j++) {
             cxt.fillStyle = nowState[i][j] === ALIVE ? aliveColor : deathColor;
-            cxt.strokeStyle = "#666";
-            cxt.lineWidth = 0.3;
+            cxt.strokeStyle = strokeStyle;
+            cxt.lineWidth = lineWidth;
             cxt.fillRect(i * gridWidth, j * gridWidth, gridWidth, gridWidth);
             cxt.strokeRect(i * gridWidth, j * gridWidth, gridWidth, gridWidth);
         }
@@ -169,6 +168,9 @@ let slowDown = document.getElementById("slowDown");
 let speedUp = document.getElementById("speedUp");
 let speedText = document.getElementById("speed");
 let start = document.getElementById("start");
+let clearGrid = document.getElementById("clear");
+
+
 speedText.value = updateDelay;
 printStateOnHtml(nowState);
 
@@ -184,6 +186,15 @@ canvas.addEventListener("click", function __handler__(evt) {
     nowState[x][y] = nowState[x][y] === ALIVE ? DEATH : ALIVE;
     printStateOnHtml(nowState);
 });
+
+clearGrid.onclick = function () {
+  for(let i = 0; i < nowState.length;i++) {
+      for(let j = 0; j < nowState[i].length; j++) {
+          nowState[i][j] = DEATH;
+      }
+  }
+  printStateOnHtml(nowState);
+};
 
 start.onclick = function () {
     if (start.value === '开始') {
@@ -208,5 +219,4 @@ speedUp.onclick = function () {
     clearInterval(interval);
     game();
 };
-
 
