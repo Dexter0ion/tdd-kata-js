@@ -4,7 +4,6 @@
 
 const ALIVE = 1;
 const DEATH = 0;
-
 const CELLROW = 3;
 
 /**
@@ -28,7 +27,8 @@ function GetCellAliveAmount(cellArr) {
 function JudgeCellNextState(cellArr) {
     let aliveAmount = GetCellAliveAmount(cellArr);
 
-    let nextAliveState = DEATH;
+    let nextAliveState = ALIVE;
+
     if (cellArr[1][1] === ALIVE) {
         if (aliveAmount > 2 && aliveAmount < 5) {
             nextAliveState = ALIVE;
@@ -109,6 +109,15 @@ function InitialState(row, line) {
     return state;
 }
 
+function game() {
+    interval = setInterval(function () {
+        //printStateOnConsole(nowState);
+        printStateOnHtml(nowState);
+        nowState = nextCellsState(nowState);
+        nowState = modifyNowState(nowState);
+    }, updateDelay);
+}
+
 function printStateOnConsole(nowState) {
     nowState.forEach(function (e) {
         let str = '';
@@ -124,20 +133,10 @@ function printStateOnConsole(nowState) {
     console.log("-------------------------------");
 }
 
-
 let updateDelay = 100;
 let nowState = InitialState(50, 50);
+
 let interval;
-
-function game() {
-
-    interval = setInterval(function () {
-        //printStateOnConsole(nowState);
-        printStateOnHtml(nowState);
-        nowState = nextCellsState(nowState);
-        nowState = modifyNowState(nowState);
-    }, updateDelay);
-}
 
 const gridWidth = 500 / nowState.length;
 

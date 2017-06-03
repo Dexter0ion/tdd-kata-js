@@ -1,16 +1,14 @@
-import _ from 'lodash'
 const ALIVE = 1;
 const DEATH = 0;
-
-const CELLROW = 3;
+const NINEGRIDROW = 3;
 
 /**
  * @return {number}
  */
 function GetCellAliveAmount(cellArr) {
     let aliveAmount = 0;
-    for (let i = 0; i < CELLROW; i++) {
-        for (let j = 0; j < CELLROW; j++) {
+    for (let i = 0; i < NINEGRIDROW; i++) {
+        for (let j = 0; j < NINEGRIDROW; j++) {
             if (cellArr[i][j] === ALIVE) {
                 aliveAmount++;
             }
@@ -24,14 +22,10 @@ function GetCellAliveAmount(cellArr) {
  */
 function JudgeCellNextState(cellArr) {
     let aliveAmount = GetCellAliveAmount(cellArr);
-
     let nextAliveState = DEATH;
+
     if (cellArr[1][1] === ALIVE) {
-        if (aliveAmount > 2 && aliveAmount < 5) {
-            nextAliveState = ALIVE;
-        } else {
-            nextAliveState = DEATH;
-        }
+        nextAliveState = aliveAmount - 1 >= 2 && aliveAmount - 1 <= 3 ? ALIVE : DEATH;
     } else if (aliveAmount === 3) {
         nextAliveState = ALIVE;
     }
@@ -39,7 +33,7 @@ function JudgeCellNextState(cellArr) {
     return nextAliveState;
 }
 
-function InitArray(row, line) {
+function initArray(row, line) {
     let arr = new Array(row);
 
     for (let i = 0; i < arr.length; i++) {
@@ -55,38 +49,41 @@ function InitArray(row, line) {
 }
 
 function getNowCellsState(cellArr) {
+    const extraLength = 4;
+    const startPosition = 2;
 
-    let nowCellsState = InitArray(cellArr.length + 4, cellArr.length + 4);
-    for (let i = 2; i < cellArr.length + 2; i++) {
-        for (let j = 2; j < cellArr[0].length + 2; j++) {
-            nowCellsState[i][j] = cellArr[i - 2][j - 2];
+    let nowCellsState = initArray(cellArr.length + extraLength, cellArr.length + extraLength);
+    for (let i = startPosition; i < cellArr.length + startPosition; i++) {
+        for (let j = startPosition; j < cellArr[0].length + startPosition; j++) {
+            nowCellsState[i][j] = cellArr[i - startPosition][j - startPosition];
         }
     }
 
     return nowCellsState;
 }
 
+function getCellAroundNineGrid(nowCellState, i, j) {
+    let centerCellArr = [];
+
+    centerCellArr.push([nowCellState[i - 1][j - 1], nowCellState[i - 1][j], nowCellState[i - 1][j + 1]]);
+    centerCellArr.push([nowCellState[i][j - 1], nowCellState[i][j], nowCellState[i][j + 1]]);
+    centerCellArr.push([nowCellState[i + 1][j - 1], nowCellState[i + 1][j], nowCellState[i + 1][j + 1]]);
+    return centerCellArr;
+}
+
 function nextCellsState(cellArr) {
-    let nextCellState = InitArray(cellArr.length + 2, cellArr.length + 2);
+    let nextCellState = initArray(cellArr.length + 2, cellArr.length + 2);
     let nowCellState = getNowCellsState(cellArr);
 
     for (let i = 1; i < nowCellState.length - 1; i++) {
         for (let j = 1; j < nowCellState[i].length - 1; j++) {
-            let centerCellArr = [];
-            centerCellArr.push([nowCellState[i - 1][j - 1], nowCellState[i - 1][j], nowCellState[i - 1][j + 1]]);
-            centerCellArr.push([nowCellState[i][j - 1], nowCellState[i][j], nowCellState[i][j + 1]]);
-            centerCellArr.push([nowCellState[i + 1][j - 1], nowCellState[i + 1][j], nowCellState[i + 1][j + 1]]);
-
-            nextCellState[i - 1][j - 1] = JudgeCellNextState(centerCellArr);
+            nextCellState[i - 1][j - 1] = JudgeCellNextState(getCellAroundNineGrid(nowCellState, i, j));
         }
     }
-
     return nextCellState;
 }
 
-
 const cellLifeGame = (cellArr) => {
-
     return nextCellsState(cellArr);
 };
 
