@@ -125,6 +125,21 @@ function printStateOnConsole(nowState) {
     console.log("-------------------------------");
 }
 
+
+let updateDelay = 1000;
+let nowState = InitialState();
+let interval;
+
+function game() {
+
+    interval = setInterval(function () {
+        //printStateOnConsole(nowState);
+        printStateOnHtml(nowState);
+        nowState = nextCellsState(nowState);
+        nowState = modifyNowState(nowState);
+    }, updateDelay);
+}
+
 function printStateOnHtml(nowState) {
     const gridWidth = 500 / nowState.length;
 
@@ -136,22 +151,29 @@ function printStateOnHtml(nowState) {
     }
 }
 
-function game() {
-    let nowState = InitialState();
-
-    const delay = 100;
-
-    setInterval(function () {
-        //printStateOnConsole(nowState);
-        printStateOnHtml(nowState);
-        nowState = nextCellsState(nowState);
-        nowState = modifyNowState(nowState);
-    }, delay);
-
-}
+const DELAY = 100;
 
 let c = document.getElementById("game");
 let cxt = c.getContext("2d");
+let slowDown = document.getElementById("slowDown");
+let speedUp = document.getElementById("speedUp");
+let speedText = document.getElementById("speed");
+speedText.value = updateDelay;
+
 game();
+
+slowDown.onclick = function () {
+    updateDelay += DELAY;
+    speedText.value = updateDelay;
+    clearInterval(interval);
+    game();
+};
+
+speedUp.onclick = function () {
+    updateDelay -= DELAY;
+    speedText.value = updateDelay;
+    clearInterval(interval);
+    game();
+};
 
 
