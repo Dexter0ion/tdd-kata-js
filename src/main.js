@@ -19,7 +19,7 @@ function GetCellAliveAmount(cellArr) {
 
 const cellLifeGame = (cellArr) => {
     let aliveAmount = GetCellAliveAmount(cellArr);
-
+ 
     if (cellArr[1][1] === 1) {
         if (aliveAmount <= 2) {
             return 0;
