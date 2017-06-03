@@ -1,4 +1,7 @@
-import _ from 'lodash'
+/**
+ * Created by 84406 on 2017/6/3.
+ */
+
 const ALIVE = 1;
 const DEATH = 0;
 
@@ -84,14 +87,55 @@ function nextCellsState(cellArr) {
     return nextCellState;
 }
 
+function modifyNowState(nowState) {
+    let newArr = [];
 
-const cellLifeGame = (cellArr) => {
+    for (let i = 0; i < nowState.length - 2; i++) {
+        newArr.push(nowState[i + 1].slice(1, nowState[i + 1].length));
+    }
 
-    return nextCellsState(cellArr);
-};
+    return newArr;
+}
 
-module.exports = {
-    cellLifeGame,
-    JudgeCellNextState,
-    nextCellsState
-};
+function InitialState() {
+    const row = 40;
+    let state = InitArray(row, row);
+
+    for (let i = 0; i < row * 2; i++) {
+        let x = Math.floor(Math.random() * row / 2) + row / 5;
+        let y = Math.floor(Math.random() * row / 2) + row / 5;
+        state[x][y] = ALIVE;
+    }
+
+    return state;
+}
+
+function printState(nowState) {
+    nowState.forEach(function (e) {
+        let str = '';
+        for (let i = 0; i < e.length; i++) {
+            if (e[i] === DEATH)
+                str += ' ';
+            else
+                str += '*';
+        }
+        console.log(str);
+    });
+
+    console.log("-------------------------------");
+}
+
+function game() {
+    let nowState = InitialState();
+
+    const delay = 100;
+
+    setInterval(function () {
+        printState(nowState);
+        nowState = nextCellsState(nowState);
+        nowState = modifyNowState(nowState);
+    }, delay);
+
+}
+
+game();
