@@ -22,10 +22,11 @@ function GetCellAliveAmount(cellArr) {
 /**
  * @return {number}
  */
-function JudgeCellNextState(centerCell, aliveAmount) {
-    let nextAliveState = DEATH;
+function JudgeCellNextState(cellArr) {
+    let aliveAmount = GetCellAliveAmount(cellArr);
 
-    if (centerCell === ALIVE) {
+    let nextAliveState = DEATH;
+    if (cellArr[1][1] === ALIVE) {
         if (aliveAmount > 2 && aliveAmount < 5) {
             nextAliveState = ALIVE;
         } else {
@@ -38,12 +39,46 @@ function JudgeCellNextState(centerCell, aliveAmount) {
     return nextAliveState;
 }
 
-const cellLifeGame = (cellArr) => {
-    let aliveAmount = GetCellAliveAmount(cellArr);
+function InitArray(row, line) {
+    let arr = new Array(row);
 
-    return JudgeCellNextState(cellArr[1][1], aliveAmount);
+    for (let i = 0; i < arr.length; i++) {
+        arr[i] = new Array(line);
+    }
+    for (let i = 0; i < arr.length; i++) {
+        for (let j = 0; j < arr[i].length; j++) {
+            arr[i][j] = 0;
+        }
+    }
+    return arr;
+}
+
+const cellLifeGame = (cellArr) => {
+    let nowCellState = InitArray(cellArr.length + 4, cellArr.length + 4);
+
+    let nextCellState = InitArray(cellArr.length + 2, cellArr.length + 2);
+
+    for (let i = 2; i < cellArr.length + 2; i++) {
+        for (let j = 2; j < cellArr.length + 2; j++) {
+            nowCellState[i][j] = cellArr[i - 2][j - 2];
+        }
+    }
+
+    for (let i = 1; i < nowCellState.length - 1; i++) {
+        for (let j = 1; j < nowCellState[i].length - 1; j++) {
+            let centerCellArr = [];
+            centerCellArr.push([nowCellState[i - 1][j - 1], nowCellState[i - 1][j], nowCellState[i - 1][j + 1]]);
+            centerCellArr.push([nowCellState[i][j - 1], nowCellState[i][j], nowCellState[i][j + 1]]);
+            centerCellArr.push([nowCellState[i + 1][j - 1], nowCellState[i + 1][j], nowCellState[i + 1][j + 1]]);
+
+            nextCellState[i - 1][j - 1] = JudgeCellNextState(centerCellArr);
+        }
+    }
+
+    return nextCellState;
 };
 
 module.exports = {
-    cellLifeGame
+    cellLifeGame,
+    JudgeCellNextState
 };
