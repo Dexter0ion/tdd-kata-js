@@ -110,7 +110,7 @@ function InitialState() {
     return state;
 }
 
-function printState(nowState) {
+function printStateOnConsole(nowState) {
     nowState.forEach(function (e) {
         let str = '';
         for (let i = 0; i < e.length; i++) {
@@ -125,17 +125,33 @@ function printState(nowState) {
     console.log("-------------------------------");
 }
 
+function printStateOnHtml(nowState) {
+    const gridWidth = 500 / nowState.length;
+
+    for (let i = 0; i < nowState.length; i++) {
+        for (let j = 0; j < nowState[i].length; j++) {
+            cxt.fillStyle = nowState[i][j] === ALIVE ? "#FF0000" : "#FFFFFF";
+            cxt.fillRect(i * gridWidth, j * gridWidth, gridWidth, gridWidth);
+        }
+    }
+}
+
 function game() {
     let nowState = InitialState();
 
     const delay = 100;
 
     setInterval(function () {
-        printState(nowState);
+        //printStateOnConsole(nowState);
+        printStateOnHtml(nowState);
         nowState = nextCellsState(nowState);
         nowState = modifyNowState(nowState);
     }, delay);
 
 }
 
+let c = document.getElementById("game");
+let cxt = c.getContext("2d");
 game();
+
+
