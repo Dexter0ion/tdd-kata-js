@@ -45,6 +45,7 @@ function InitArray(row, line) {
     for (let i = 0; i < arr.length; i++) {
         arr[i] = new Array(line);
     }
+
     for (let i = 0; i < arr.length; i++) {
         for (let j = 0; j < arr[i].length; j++) {
             arr[i][j] = 0;
@@ -53,16 +54,20 @@ function InitArray(row, line) {
     return arr;
 }
 
-const cellLifeGame = (cellArr) => {
-    let nowCellState = InitArray(cellArr.length + 4, cellArr.length + 4);
-
-    let nextCellState = InitArray(cellArr.length + 2, cellArr.length + 2);
-
+function getNowCellsState(cellArr) {
+    
+    let nowCellsState = InitArray(cellArr.length + 4, cellArr.length + 4);
     for (let i = 2; i < cellArr.length + 2; i++) {
-        for (let j = 2; j < cellArr.length + 2; j++) {
-            nowCellState[i][j] = cellArr[i - 2][j - 2];
+        for (let j = 2; j < cellArr[0].length + 2; j++) {
+            nowCellsState[i][j] = cellArr[i - 2][j - 2];
         }
     }
+    return nowCellsState;
+}
+
+function nextCellsState(cellArr) {
+    let nextCellState = InitArray(cellArr.length + 2, cellArr.length + 2);
+    let nowCellState = getNowCellsState(cellArr);
 
     for (let i = 1; i < nowCellState.length - 1; i++) {
         for (let j = 1; j < nowCellState[i].length - 1; j++) {
@@ -76,6 +81,16 @@ const cellLifeGame = (cellArr) => {
     }
 
     return nextCellState;
+}
+
+const cellLifeGame = (cellArr) => {
+    const cellState = nextCellsState(cellArr);
+
+    // cellState.forEach(function (e) {
+    //     console.log(e.toString());
+    // });
+
+    return cellState;
 };
 
 module.exports = {

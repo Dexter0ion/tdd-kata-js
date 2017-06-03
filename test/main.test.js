@@ -30,4 +30,24 @@ describe('cellLifeGame', () => {
         expect(cellLifeGame([[1, 0, 0], [0, 0, 1], [1, 0, 0]])).deep.equal([[0, 0, 0, 0, 0], [0, 0, 0, 0, 0], [0, 0, 1, 0, 0], [0, 0, 0, 0, 0], [0, 0, 0, 0, 0]]);
     });
 
+    it('should return next cells state nextState when cells state is nowState', () => {
+        let nowState = [
+            [1,0,1,0],
+            [0,1,0,1],
+            [0,0,0,1],
+            [0,0,1,0]
+        ];
+
+        let nextState = [
+            [0,0,0,0,0,0],
+            [0,0,1,1,0,0],
+            [0,0,1,0,1,0],
+            [0,0,0,0,1,0],
+            [0,0,0,0,0,0],
+            [0,0,0,0,0,0],
+        ];
+
+        expect(cellLifeGame(nowState)).deep.equal(nextState);
+    });
+
 });
