@@ -26,6 +26,9 @@ const cellLifeGame = (cellArr) => {
         } else if (aliveAmount <= 4) {
             return cellArr[1][1];
         }
+        else {
+            return 0;
+        }
     } else {
         if (aliveAmount >= 2 && aliveAmount <= 3) {
             return cellArr[1][1];
