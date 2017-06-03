@@ -1,4 +1,6 @@
 import _ from 'lodash'
+const ALIVE = 1;
+const DEATH = 0;
 
 const CELLROW = 3;
 
@@ -9,7 +11,7 @@ function GetCellAliveAmount(cellArr) {
     let aliveAmount = 0;
     for (let i = 0; i < CELLROW; i++) {
         for (let j = 0; j < CELLROW; j++) {
-            if (cellArr[i][j] === 1) {
+            if (cellArr[i][j] === ALIVE) {
                 aliveAmount++;
             }
         }
@@ -17,23 +19,29 @@ function GetCellAliveAmount(cellArr) {
     return aliveAmount;
 }
 
+/**
+ * @return {number}
+ */
+function JudgeCellNextState(centerCell, aliveAmount) {
+    let nextAliveState = DEATH;
+
+    if (centerCell === ALIVE) {
+        if (aliveAmount > 2 && aliveAmount < 5) {
+            nextAliveState = ALIVE;
+        } else {
+            nextAliveState = DEATH;
+        }
+    } else if (aliveAmount === 3) {
+        nextAliveState = ALIVE;
+    }
+
+    return nextAliveState;
+}
+
 const cellLifeGame = (cellArr) => {
     let aliveAmount = GetCellAliveAmount(cellArr);
- 
-    if (cellArr[1][1] === 1) {
-        if (aliveAmount <= 2) {
-            return 0;
-        } else if (aliveAmount <= 4) {
-            return cellArr[1][1];
-        }
-        else {
-            return 0;
-        }
-    } else {
-        if (aliveAmount >= 2 && aliveAmount <= 3) {
-            return cellArr[1][1];
-        }
-    }
+
+    return JudgeCellNextState(cellArr[1][1], aliveAmount);
 };
 
 module.exports = {
