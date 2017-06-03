@@ -126,7 +126,7 @@ function printStateOnConsole(nowState) {
 }
 
 
-let updateDelay = 1000;
+let updateDelay = 100;
 let nowState = InitialState();
 let interval;
 
@@ -140,27 +140,60 @@ function game() {
     }, updateDelay);
 }
 
+
+const gridWidth = 500 / nowState.length;
+
 function printStateOnHtml(nowState) {
-    const gridWidth = 500 / nowState.length;
+
+    let aliveColor = "#FF0000";
+    const deathColor = "#FFFFFF";
 
     for (let i = 0; i < nowState.length; i++) {
         for (let j = 0; j < nowState[i].length; j++) {
-            cxt.fillStyle = nowState[i][j] === ALIVE ? "#FF0000" : "#FFFFFF";
+            cxt.fillStyle = nowState[i][j] === ALIVE ? aliveColor : deathColor;
+            cxt.strokeStyle = "#666";
+            cxt.lineWidth = 0.3;
             cxt.fillRect(i * gridWidth, j * gridWidth, gridWidth, gridWidth);
+            cxt.strokeRect(i * gridWidth, j * gridWidth, gridWidth, gridWidth);
         }
     }
 }
 
+//Client Begin---------------------------------------------
+
 const DELAY = 100;
 
-let c = document.getElementById("game");
-let cxt = c.getContext("2d");
+let canvas = document.getElementById("game");
+let cxt = canvas.getContext("2d");
 let slowDown = document.getElementById("slowDown");
 let speedUp = document.getElementById("speedUp");
 let speedText = document.getElementById("speed");
+let start = document.getElementById("start");
 speedText.value = updateDelay;
+printStateOnHtml(nowState);
 
-game();
+canvas.addEventListener("click", function __handler__(evt) {
+    let xPos = evt.clientX;
+    let yPos = evt.clientY;
+    let rect = canvas.getBoundingClientRect();
+    xPos -= rect.left;
+    yPos -= rect.top;
+    console.log(xPos, yPos); // (xPos, yPos) 就是鼠标在 canvas 单击时的坐标
+    let x = Math.floor(xPos / gridWidth);
+    let y = Math.floor(yPos / gridWidth);
+    nowState[x][y] = nowState[x][y] === ALIVE ? DEATH : ALIVE;
+    printStateOnHtml(nowState);
+});
+
+start.onclick = function () {
+    if (start.value === '开始') {
+        start.value = '暂停';
+        game();
+    } else {
+        clearInterval(interval);
+        start.value = '开始';
+    }
+};
 
 slowDown.onclick = function () {
     updateDelay += DELAY;
