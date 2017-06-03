@@ -75,7 +75,7 @@ function getCellAroundNineGrid(nowCellState, i, j) {
     return centerCellArr;
 }
 
-function nextCellsState(cellArr) {
+function getNextCellsState(cellArr) {
     let nextCellState = initArray(cellArr.length + 2, cellArr.length + 2);
     let nowCellState = getNowCellsState(cellArr);
 
@@ -98,23 +98,22 @@ function modifyNowState(nowState) {
     return newArr;
 }
 
-function initialState(row, line) {
-    let state = initArray(row, line);
+function initialState(cellArray) {
+    let row = cellArray.length;
+    let line = cellArray[0].length;
 
     for (let i = 0; i < row * 2; i++) {
         let x = Math.floor(Math.random() * row / 2) + row / 5;
-        let y = Math.floor(Math.random() * line / 2) + row / 5;
-        state[x][y] = ALIVE;
+        let y = Math.floor(Math.random() * line / 2) + line / 5;
+        cellArray[x][y] = ALIVE;
     }
-
-    return state;
 }
 
 function game() {
     interval = setInterval(function () {
         //printStateOnConsole(nowState);
         printStateOnHtml(nowState);
-        nowState = nextCellsState(nowState);
+        nowState = getNextCellsState(nowState);
         nowState = modifyNowState(nowState);
     }, updateDelay);
 }
@@ -135,7 +134,9 @@ function printStateOnConsole(nowState) {
 }
 
 let updateDelay = 100;
-let nowState = initialState(50, 50);
+
+let nowState = initArray(100, 100);
+initialState(nowState);
 
 let interval;
 
@@ -188,12 +189,12 @@ canvas.addEventListener("click", function __handler__(evt) {
 });
 
 clearGrid.onclick = function () {
-  for(let i = 0; i < nowState.length;i++) {
-      for(let j = 0; j < nowState[i].length; j++) {
-          nowState[i][j] = DEATH;
-      }
-  }
-  printStateOnHtml(nowState);
+    for (let i = 0; i < nowState.length; i++) {
+        for (let j = 0; j < nowState[i].length; j++) {
+            nowState[i][j] = DEATH;
+        }
+    }
+    printStateOnHtml(nowState);
 };
 
 start.onclick = function () {

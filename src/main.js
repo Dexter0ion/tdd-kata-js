@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 const ALIVE = 1;
 const DEATH = 0;
 const NINEGRIDROW = 3;
